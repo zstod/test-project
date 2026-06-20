@@ -50,7 +50,7 @@ async def get_target(id: int, user_id: int = Depends(check_token), session = Dep
     result = await session.execute(request)
     target = result.scalars().first()
     if not target:
-        raise HTTPException(status_code=404, detail="Target not found")
+        raise HTTPException(status_code=404, detail="target not found")
     return target
 
 
@@ -71,8 +71,9 @@ async def delete_target(id: int, user_id: int = Depends(check_token), session = 
     request = select(Target).where(Target.id == id, Target.user_id == user_id)
     result = await session.execute(request)
     delete = result.scalars().first()
+    raise 
     if not delete:
-        return {'target': 'not found'}
+        raise HTTPException(status_code=404, detail="target not found")
     await session.delete(delete)
     await session.commit()
     return status.HTTP_204_NO_CONTENT
