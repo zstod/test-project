@@ -76,7 +76,7 @@ async def delete_target(id: int, user_id: int = Depends(check_token), session = 
         return {'target': 'not found'}
     await session.delete(delete)
     await session.commit()
-    return {'target': 'deleted'}
+    return status.HTTP_204_NO_CONTENT
 
 
 @app.patch('/api/targets/{id}')
@@ -88,7 +88,7 @@ async def active_target(id: int,user_id: int = Depends(check_token), session = D
     session.add(update)
     await session.commit()
     await session.refresh(update)
-    return {'scan': 'off'}
+    return status.HTTP_204_NO_CONTENT
 
 
 @app.get('/api/results/{id}')
