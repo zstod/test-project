@@ -15,7 +15,7 @@ async def scan(target_id, url, client, asyn):
         status = 'Error'
     time_end = perf_counter()
     time_response = time_end - time_start
-    alive = status in ['200', '201','202', '204', '206', '301', '302', '401']
+    alive = status in ['200', '201', '202', '204', '206', '301', '302', '304' '401', '403']
 
     async with asyn() as session:
         target = await session.get(Target,target_id)
