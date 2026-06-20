@@ -18,7 +18,7 @@ services:
 
   init_db:
     build: .
-    command: python -m backend.init_db
+    command: python -m project.init_db
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +27,7 @@ services:
 
   scanner:
     build: .
-    command: python -m backend.scanner
+    command: python -m project.scanner
     depends_on:
       db:
         condition: service_healthy
@@ -36,7 +36,7 @@ services:
 
   api:
     build: .
-    command: python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000
+    command: python -m uvicorn project.api:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     depends_on:
