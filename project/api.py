@@ -1,15 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException, status
-from db import start_session
-from models import UserRead, UserCreate, Users, Target, CreateTarget, Result
-from auth import create_token, check_token
+from project.db import start_session
+from project.models import UserRead, UserCreate, Users, Target, CreateTarget, Result
+from project.auth import create_token, check_token
 from sqlmodel import select
 
 app = FastAPI()
 
 @app.get('/api')
 async def read_root():
-    return {'status': 'api is running',
-            'version': '0.0.1'}
+    return {'status': 'api is running'}
 
 
 @app.post('/api/register/', response_model=UserRead)
