@@ -6,10 +6,10 @@ import os
 
 load_dotenv()
 
-DATABASE_NAME = os.getenv('DATABASE_NAME')
-DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+POSTGRES_NAME = os.getenv('POSTGRES_NAME')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 
-db_url = f'postgresql+asyncpg://{DATABASE_NAME}:{DATABASE_PASSWORD}@db:5432/database'
+db_url = f'postgresql+asyncpg://{POSTGRES_NAME}:{POSTGRES_PASSWORD}@db:5432/database'
 engine = create_async_engine(db_url, echo=True)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
