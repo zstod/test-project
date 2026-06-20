@@ -3,8 +3,8 @@ services:
     image: postgres:18
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password193
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: database
     ports:
       - "5432:5432"
@@ -23,7 +23,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://user:password193@db:5432/database
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/database
 
   scanner:
     build: .
@@ -32,7 +32,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://user:password193@db:5432/database
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/database
 
   api:
     build: .
@@ -43,6 +43,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://user:password193@db:5432/database
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/database
 volumes:
   postgres_data:
