@@ -1,4 +1,4 @@
-from models import Users, Target, Result
+from project.models import Users, Target, Result
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel import SQLModel
 from dotenv import load_dotenv
@@ -6,10 +6,10 @@ import os
 
 load_dotenv()
 
-POSTGRES_NAME = os.getenv('POSTGRES_NAME')
+POSTGRES_USER = os.getenv('POSTGRES_USER')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 
-db_url = f'postgresql+asyncpg://{POSTGRES_NAME}:{POSTGRES_PASSWORD}@db:5432/database'
+db_url = f'postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@db:5432/database'
 engine = create_async_engine(db_url, echo=True)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
