@@ -1,9 +1,15 @@
 from models import Users, Target, Result
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel import SQLModel
+from dotenv import load_dotenv
+import os
 
-sqlite_url = f'postgresql+asyncpg://user:password193@db:5432/database'
-engine = create_async_engine(sqlite_url, echo=True)
+load_dotenv()
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+db_url = f'{DATABASE_URL}'
+engine = create_async_engine(db_url, echo=True)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
 async def create_db_tables():
