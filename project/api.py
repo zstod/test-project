@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from project.db import start_session
 from project.models import UserRead, UserCreate, Users, Target, CreateTarget, Result
-from project.auth import create_token, check_token
+from project.auth import create_token, check_token, hash_password, verify_password
 from sqlmodel import select
 
 app = FastAPI()
@@ -19,7 +19,8 @@ async def regist(user_model: UserCreate, session = Depends(start_session)):
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Пользователь с таким email уже существует')
-    user = Users(email=user_model.email, password=user_model.password)
+    hashed_password = hash_password(user_model.password)
+    user = Users(email=user_model.email, password=hashed_password)
     session.add(user)
     await session.commit()
     await session.refresh(user)
@@ -28,11 +29,12 @@ async def regist(user_model: UserCreate, session = Depends(start_session)):
 
 @app.post('/api/login/')
 async def login(user_model: UserCreate, session = Depends(start_session)):
-    request = select(Users).where(Users.email == user_model.email, Users.password == user_model.password)
+    request = select(Users).where(Users.email == user_model.email)
     result = await session.execute(request)
     user = result.scalars().first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Неверный логин или пароль')
+    if not user or not verify_password(user_model.password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                            detail='Неверный логин или пароль')
     token = create_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
@@ -50,7 +52,7 @@ async def get_target(id: int, user_id: int = Depends(check_token), session = Dep
     result = await session.execute(request)
     target = result.scalars().first()
     if not target:
-        raise HTTPException(status_code=404, detail="target not found")
+        raise HTTPException(status_code=404, detail="Target not found")
     return target
 
 
@@ -71,9 +73,8 @@ async def delete_target(id: int, user_id: int = Depends(check_token), session = 
     request = select(Target).where(Target.id == id, Target.user_id == user_id)
     result = await session.execute(request)
     delete = result.scalars().first()
-    raise 
     if not delete:
-        raise HTTPException(status_code=404, detail="target not found")
+        return {'target': 'not found'}
     await session.delete(delete)
     await session.commit()
     return status.HTTP_204_NO_CONTENT
