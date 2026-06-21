@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+from passlib.context import CryptContext
 import os
 
 load_dotenv()
@@ -11,7 +12,15 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 TOKEN_EXPIRE_MINUTES = 30
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password):
+    return context.hash(password)
+
+def verify_password(password, hashed_password):
+    return context.verify(password, hashed_password)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login/")
 
 def create_token(data: dict):
     to_encode = data.copy()
