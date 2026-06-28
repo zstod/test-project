@@ -8,9 +8,11 @@
 git clone https://github.com/zstod/site-checker-service
 
  2. Создаем конфиг из шаблона (для локалхоста можно ничего не менять внутри)
+
 cp .env.example .env
 
- 3. Поднимаем проект
+ 4. Поднимаем проект
+
 docker-compose up -d --build
 
 После запуска API Swagger будут доступны по адресу: http://localhost:8000/docs
